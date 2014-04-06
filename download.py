@@ -4,7 +4,7 @@ import urllib2 as u2
 import os
 import sys
 
-path_sepeator = '\\' if os.name in 'nt' else '/'
+os_path_sepeator = '\\' if os.name in 'nt' else '/'
 
 def download(feed_url, local_location):
     parsed_xml = parse(u2.urlopen(feed_url))
@@ -19,7 +19,7 @@ def target_download(remote_path_fname, local_location):
     scheme = parsed_address.scheme
 
     fname = remote_path_fname.split('/')[-1]
-    localpath = local_location + path_sepeator + fname
+    localpath = local_location + os_path_sepeator + fname
 
     if 'ftp' in scheme:
         download_ftp(remote_path_fname, localpath)
@@ -60,10 +60,10 @@ def download_ftp(remote_path_fname, localpath, user="anonymous",password="anonym
         response = ftp.retrbinary("RETR " + parsed_address.path, f.write)
     if '226' not in response:
         done = False
-        print "Download failed: " + (localpath.split(path_sepeator))[-1]
+        print "Download failed: " + (localpath.split(os_path_sepeator))[-1]
     else:
         done = True
-        print "Download successful: " + (localpath.split(path_sepeator))[-1]
+        print "Download successful: " + (localpath.split(os_path_sepeator))[-1]
     return done
     
 
@@ -143,30 +143,28 @@ def download_http(remote_path_fname, localpath):
     print "Download completed:" + str(os.path.getsize(localpath)) + "Bytes"
     return True
 
-"""
-if __name__=="__main__":
-    remote = "http://archive.apache.org/dist/apr/binaries/win32/apr-1.2.12-winnt-x86-ipv6-msvcrt60.zip"
-    local = "c:\\new"
-    print remote
-    print local
-    download(remote,local)
-"""
-
-
-def usage(progname):
-    print "Usage: python downloader.py --feed=<RSS-Feed-URL> --output=<PATH-TO-DIRECTORY>"
+# def usage(progname):
+    # print "Usage: python downloader.py --feed=<RSS-Feed-URL> --output=<PATH-TO-DIRECTORY>"
 
 if __name__ == '__main__':
-    if(len(sys.argv) < 3):
-        usage(sys.argv[0])
-        sys.exit(1)
-
-    """ 
-# to-do: fix command line parsing
     cli_command = argparse.ArgumentParser(description='Download contents by grabbing links from a given RSS feed url')
-    cli_command.add_argument('--feed=', dest='feed_url', action='store_const', const=feed_url, help='URL of the RSS feed')
-    cli_command.add_argument('--output=', dest='local_path', action='store_const', const=local_path, help='local folder to save the files')
-    """
+    cli_command.add_argument('--feed', dest='feed_url', action='store', help='URL of the RSS feed')
+    cli_command.add_argument('--output', dest='local_location', action='store', help='local folder, where to save the files')
+	
+	parsed_arguments = cli_command.parse_args(sys.argv[1:])
+	feed_url = parsed_arguments.feed_url
+	local_location = parsed_arguments.local_path
+	if parsed_arguments.feed_url==None:
+		print "Sorry. Feed-URL cannot be empty. Quitting from this job ..."
+		exit(0)
+	
+	if parsed_arguments.local_location==None:
+		print "Saving location is not given. Going to use default location depending on your OS."
+		local_location = os.environ['HOMEPATH'] if os.name  in 'nt' else "~/"
+		os_path_sepeator = '\\' if os.name in 'nt' else '/'
+		local_location = local_location + os_path_sepeator + re.sub("[^0-9a-z]","_",feed_url)
+		print "Auto-detected Download location: %s" % local_location
+
     
     parsed_xml = parse(u2.urlopen(feed_url))
     all_downloads = [item.findtext('link') for item in parsed_xml.iterfind('channel/item')]
