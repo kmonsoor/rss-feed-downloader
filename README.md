@@ -5,10 +5,15 @@ Content downloader from a RSS feed
 
 It can download content from a RSS feed link
 
-for now, you have to use function to initiate download:
+You can run like this command:
 
-    download(link, local_folder)
+    python downloader.py --feed=<RSS-Feed-URL> --output=<PATH-TO-DIRECTORY>
+    
+    if no "--output" argument is supplied, default location will YOUR_OS_DECLARED_HOME_FOLDER
 
-TODO:
-   1. parsing the CLI arguments
-   2.  completing partial download from FTP server
+By importing "download" module, you can use this function to initiate download:
+
+    download(rss_link, local_folder)
+
+Yet TO-DO:
+   (.)  completing partial download from FTP server
