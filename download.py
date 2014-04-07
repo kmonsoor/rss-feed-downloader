@@ -1,3 +1,10 @@
+__Project__ = "RSS-feed-downloader"
+__author__  = "Khaled Monsoor <k@kmonsoor.com>"
+
+"""
+This is the main module
+"""
+
 import xml.etree.ElementTree as xmlparse
 import urlparse as up
 import urllib2 as u2
@@ -10,6 +17,13 @@ os_path_sepeator = '\\' if os.name in 'nt' else '/'
 
 
 def target_download(remote_path_fname, local_location):
+    """
+    This function handles individual download.
+    It distinguish between HTTP and FTP downloads, and use respective function.
+    
+    remote_path_fname --> (str) complete link of the target download 
+    local_location -->  (str) Complete path of the saving folder/directory
+    """
     parsed_address = up.urlparse(link)
     scheme = parsed_address.scheme
 
@@ -24,6 +38,9 @@ def target_download(remote_path_fname, local_location):
         print "Error: Unsupported protocol"
         done = False
         return done
+        
+    done = True
+    return done
 
 
 def download_ftp(remote_path_fname, localpath, user="anonymous",password="anonymous"):
