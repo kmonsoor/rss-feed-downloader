@@ -90,6 +90,15 @@ def download_ftp(remote_path_fname, localpath, user="anonymous",password="anonym
 
 
 def download_http(remote_path_fname, localpath):
+    """
+    This method fulfills individual HTTP/HTTPS download request including partial downloads
+    
+    remote_path_fname --> (str) complete link of the target download from HTTP server
+    localpath  --> (str) Complete path of the file to be saved, including the filename
+    
+    TODO:
+       -- 1-byte bug in downloads
+    """
     start = 0
     end = 0
     chunk_size = 1024 * 50   # 10KB
@@ -105,7 +114,7 @@ def download_http(remote_path_fname, localpath):
     print "Download_Size:" + str(download_size)
     
     # checking if local file exists or not
-    if os.path.exists(localpath):
+    if os.path.exists(localpath):  # exists
         current_size = os.path.getsize(localpath)
         print "Current_Size:" + str(current_size)
         if current_size >= download_size:
@@ -121,7 +130,7 @@ def download_http(remote_path_fname, localpath):
                 print "Local location couldn't be accessed for writing"
                 done = False
                 return done
-    else:
+    else:   # don't exists
         try:
             local_file_handle = open(localpath,"wb",0)
         except IOError:
@@ -164,8 +173,7 @@ def download_http(remote_path_fname, localpath):
     print "Download completed:" + str(os.path.getsize(localpath)) + "Bytes"
     return True
 
-# def usage(progname):
-    # print "Usage: python downloader.py --feed=<RSS-Feed-URL> --output=<PATH-TO-DIRECTORY>"
+
 
 if __name__ == '__main__':
     cli_command = argparse.ArgumentParser(description='Download contents by grabbing links from a given RSS feed url')
