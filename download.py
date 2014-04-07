@@ -1,8 +1,10 @@
-from xml.etree.ElementTree import parse
+import xml.etree.ElementTree as xmlparse
 import urlparse as up
 import urllib2 as u2
+import argparse
 import os
 import sys
+import re
 
 os_path_sepeator = '\\' if os.name in 'nt' else '/'
 
@@ -150,23 +152,30 @@ if __name__ == '__main__':
     cli_command = argparse.ArgumentParser(description='Download contents by grabbing links from a given RSS feed url')
     cli_command.add_argument('--feed', dest='feed_url', action='store', help='URL of the RSS feed')
     cli_command.add_argument('--output', dest='local_location', action='store', help='local folder, where to save the files')
-	
-	parsed_arguments = cli_command.parse_args(sys.argv[1:])
-	feed_url = parsed_arguments.feed_url
-	local_location = parsed_arguments.local_path
-	if parsed_arguments.feed_url==None:
-		print "Sorry. Feed-URL cannot be empty. Quitting from this job ..."
-		exit(0)
-	
-	if parsed_arguments.local_location==None:
-		print "Saving location is not given. Going to use default location depending on your OS."
-		local_location = os.environ['HOMEPATH'] if os.name  in 'nt' else "~/"
-		os_path_sepeator = '\\' if os.name in 'nt' else '/'
-		local_location = local_location + os_path_sepeator + re.sub("[^0-9a-z]","_",feed_url)
-		print "Auto-detected Download location: %s" % local_location
-
     
-    parsed_xml = parse(u2.urlopen(feed_url))
+    parsed_arguments = cli_command.parse_args(sys.argv[1:])
+    
+    if parsed_arguments.feed_url==None:
+        print "Error: Sorry. Feed-URL cannot be empty. Quitting from this job ..."
+        exit(0)
+    else:
+        feed_url = parsed_arguments.feed_url
+    
+    if parsed_arguments.local_location==None:
+        print "Warning: Saving location is not given. Going to use default location depending on your OS."
+        local_location = os.environ['HOMEPATH'] if os.name  in 'nt' else "~/"
+        home_drive = os.environ['HOMEDRIVE']
+        os_path_sepeator = '\\' if os.name in 'nt' else '/'
+        local_location = home_drive + local_location + os_path_sepeator + re.sub("[^0-9a-z]","_",feed_url)
+        print "Auto-detected Download location: %s" % local_location
+    else:
+        local_location = parsed_arguments.local_path
+
+    try:
+        parsed_xml = xmlparse.parse(u2.urlopen(feed_url))
+    except xmlparse.ParseError:
+        print "Error: invalid URL. Quitting ..."
+        exit(0)
     all_downloads = [item.findtext('link') for item in parsed_xml.iterfind('channel/item')]
     
     for download in all_downloads:
