@@ -1,3 +1,5 @@
+#!/usr/local/bin/python2.7
+
 __Project__ = "RSS-feed-downloader"
 __author__  = "Khaled Monsoor <k@kmonsoor.com>"
 __license__ = "MIT"
