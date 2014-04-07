@@ -1,5 +1,6 @@
 __Project__ = "RSS-feed-downloader"
 __author__  = "Khaled Monsoor <k@kmonsoor.com>"
+__license__ = "MIT"
 
 """
 This is the main module
@@ -13,8 +14,6 @@ import os
 import sys
 import re
 
-os_path_sepeator = '\\' if os.name in 'nt' else '/'
-
 
 def target_download(remote_path_fname, local_location):
     """
@@ -24,6 +23,7 @@ def target_download(remote_path_fname, local_location):
     remote_path_fname --> (str) complete link of the target download 
     local_location -->  (str) Complete path of the saving folder/directory
     """
+    os_path_sepeator = '\\' if os.name in 'nt' else '/'
     parsed_address = up.urlparse(link)
     scheme = parsed_address.scheme
 
@@ -44,6 +44,15 @@ def target_download(remote_path_fname, local_location):
 
 
 def download_ftp(remote_path_fname, localpath, user="anonymous",password="anonymous"):
+    """
+    This method fulfills individual FTP download request including login handling
+    
+    remote_path_fname --> (str) complete link of the target download from FTP server
+    localpath  --> (str) Complete path of the file to be saved, including the filename
+    
+    TODO:
+       -- cannot handle partial downloads
+    """
     parsed_address = up.urlparse(remote_path_fname)
     fname = parsed_address.path
     directory = re.sub(fname, parsed_address.path, '')
@@ -68,7 +77,7 @@ def download_ftp(remote_path_fname, localpath, user="anonymous",password="anonym
         done = False
         return done
         
-    with open(localpath) as f:
+    with open(localpath, "wb" ) as f:
         response = ftp.retrbinary("RETR " + parsed_address.path, f.write)
     if '226' not in response:
         done = False
