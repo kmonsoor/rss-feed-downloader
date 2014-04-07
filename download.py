@@ -8,13 +8,6 @@ import re
 
 os_path_sepeator = '\\' if os.name in 'nt' else '/'
 
-def download(feed_url, local_location):
-    parsed_xml = parse(u2.urlopen(feed_url))
-    all_downloads = [item.findtext('link') for item in parsed_xml.iterfind('channel/item')]
-    
-    for download in all_downloads:
-        target_download(download, local_location)
-
 
 def target_download(remote_path_fname, local_location):
     parsed_address = up.urlparse(link)
