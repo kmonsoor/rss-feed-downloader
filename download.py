@@ -101,7 +101,7 @@ def download_http(remote_path_fname, localpath):
     """
     start = 0
     end = 0
-    chunk_size = 1024 * 50   # 10KB
+    chunk_size = 1024 * 50   # 50KB; it can be changed depending on the network
     
     response = u2.urlopen(remote_path_fname)
 
@@ -206,4 +206,8 @@ if __name__ == '__main__':
     all_downloads = [item.findtext('link') for item in parsed_xml.iterfind('channel/item')]
     
     for download in all_downloads:
-        target_download(download, local_location)
+        downloaded = target_download(download, local_location)
+        if not downloaded:
+            pass
+        else:
+            pass
