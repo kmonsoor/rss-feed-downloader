@@ -1,20 +1,52 @@
 #!/usr/local/bin/python2.7
 
-__Project__ = "RSS-feed-downloader"
+__project__ = "RSS-feed-downloader"
 __author__  = "Khaled Monsoor <k@kmonsoor.com>"
 __license__ = "MIT"
 
+
 """
-This is the main module
+This is the main module for rss-feed-downloader
+
+
+TODO
+----
+ * adding ability to partial download from FTP server
+ * updating print statements to have logging to file
 """
+
 
 import xml.etree.ElementTree as xmlparse
 import urlparse as up
 import urllib2 as u2
 import argparse
+import datetime
 import os
 import sys
 import re
+
+
+def log(logfile, string=None, error=None):
+    """
+    This function is for logging outputs and error messages in a local file
+         with proper timestamp
+    
+    logfile  -->  local log file
+    string   -->  any message that will be shown to human user on console
+    error    -->  any error message to write into log file
+    """
+    try:
+        with open(logfile, "a") as f:
+            f.write('\n' + (datetime.datetime.now().time()).isoformat())
+            if string:
+                print string
+                f.write(' ' + str(string))
+            if error:
+                f.write(str(error))
+    except IOError as e:
+        print "Error opening logfile")
+        print str(e)
+    
 
 
 def target_download(remote_path_fname, local_location):
