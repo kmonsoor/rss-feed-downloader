@@ -26,25 +26,28 @@ import sys
 import re
 
 
-def log(logfile, string=None, error=None):
+def log(logfile, user_message=None, error=None):
     """
     This function is for logging outputs and error messages in a local file
          with proper timestamp
     
-    logfile  -->  local log file
-    string   -->  any message that will be shown to human user on console
-    error    -->  any error message to write into log file
+    logfile  -->  (string) local log file name 
+    string   -->  (string) any message that will be shown to human user on console
+    error    -->  (string / exception) any error to write into log file
     """
     try:
+        if not os.path.exists(logfile):
+            (open(logfile, 'w')).close()
+            
         with open(logfile, "a") as f:
             f.write('\n' + (datetime.datetime.now().time()).isoformat())
-            if string:
-                print string
-                f.write(' ' + str(string))
+            if user_message:
+                print str(user_message)
+                f.write(' ' + str(user_message))
             if error:
                 f.write(str(error))
     except IOError as e:
-        print "Error opening logfile")
+        print "Error opening logfile"
         print str(e)
     
 
