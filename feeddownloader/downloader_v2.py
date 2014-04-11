@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as xmlparse
-import urlparse as up
-import urllib2 as u2
+import urlgrabber as ug
+
 
 if __name__ == '__main__':
     cli_command = argparse.ArgumentParser(description='Download contents by grabbing links from a given RSS feed url')
@@ -28,6 +28,23 @@ if __name__ == '__main__':
     try:
   	    all_downloads = [item.findtext('link') for item in xmlparse.parse(u2.urlopen(feed_url)).iterfind('channel/item')]
     except xmlparse.ParseError:
-        print "Error: invalid URL. Quitting ..."
+        print "Error: invalid RSS feed. Quitting ..."
         exit(0)
-    
+    except URLError as e:
+    	print str(e)
+    	exit(0)
+    except ValueError as e:
+    	print str(e)
+    	exit(0)
+    except KeyError as e:
+    	print str(e)
+    	exit(0)
+
+    print all_downloads
+
+    # downloading
+    for single_download in all_downloads:
+    	print "Starting: "+ single_download
+    	g = ug.grabber.URLGrabber(reget='simple',retry=2)
+    	response = ug.urlgrab(single_download)
+    	print "Completed: "+ single_download
