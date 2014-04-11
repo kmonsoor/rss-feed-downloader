@@ -60,12 +60,11 @@ def target_download(remote_path_fname, local_location):
     remote_path_fname --> (str) complete link of the target download 
     local_location -->  (str) Complete path of the saving folder/directory
     """
-    os_path_sepeator = '\\' if os.name in 'nt' else '/'
     parsed_address = up.urlparse(link)
     scheme = parsed_address.scheme
 
     fname = remote_path_fname.split('/')[-1]
-    localpath = local_location + os_path_sepeator + fname
+    localpath = local_location + os.path.sep + fname
 
     if 'ftp' in scheme:
         download_ftp(remote_path_fname, localpath)
@@ -118,10 +117,10 @@ def download_ftp(remote_path_fname, localpath, user="anonymous",password="anonym
         response = ftp.retrbinary("RETR " + parsed_address.path, f.write)
     if '226' not in response:
         done = False
-        print "Download failed: " + (localpath.split(os_path_sepeator))[-1]
+        print "Download failed: " + (localpath.split(os.path.sep))[-1]
     else:
         done = True
-        print "Download successful: " + (localpath.split(os_path_sepeator))[-1]
+        print "Download successful: " + (localpath.split(os.path.sep))[-1]
     return done
     
 
@@ -229,8 +228,8 @@ if __name__ == '__main__':
         print "Warning: Saving location is not given. Going to use default location depending on your OS."
         local_location = os.environ['HOMEPATH'] if os.name  in 'nt' else "~/"
         home_drive = os.environ['HOMEDRIVE']
-        os_path_sepeator = '\\' if os.name in 'nt' else '/'
-        local_location = home_drive + local_location + os_path_sepeator + re.sub("[^0-9a-z]","_",feed_url)
+        #os_path_sepeator = '\\' if os.name in 'nt' else '/'
+        local_location = home_drive + local_location + os.path.sep + re.sub("[^0-9a-z]","_",feed_url)
         print "Auto-detected Download location: %s" % local_location
     else:
         local_location = parsed_arguments.local_path
