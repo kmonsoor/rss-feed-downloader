@@ -18,7 +18,35 @@ if __name__ == '__main__':
     local_path = parsed_arguments.local_path
 
 
+from multiprocessing import Pool
+from multiprocessing.dummy import Pool as ThreadPool
 
+
+
+urls = [
+	"http://www.python.org/",
+	"http://www.python.org/about/",
+	"http://google.com/","http://facebook.com/"
+	"http://www.python.org/doc/",
+	"http://www.python.org/download/"
+	]
+	
+# parallel thread methon
+pool = ThreadPool(4)
+results = pool.map(urlopen, urls)
+pool.close() 
+pool.join()
+
+
+#single thread method
+print dt.datetime.now().time()
+results = []
+for url in urls:
+     results.append(urlopen(url))
+print dt.datetime.now().time()
+
+
+	
 
 
 
